@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>WebSocket Microphone Streaming</title>
+  <link rel="stylesheet" href="./css/styles.css">
+  <script src="./js/config.js"></script>
+  <script src="./js/service.js"></script>
+  <script src="./js/animation.js"></script>
+  <script src="./js/audio.js"></script>
+  <script src="./js/main.js"></script>
+</head>
+
+<body>
+  <div class="animation center-div">
+    <canvas id="blobCanvas" width="700" height="700" style="display: none;"></canvas>
+  </div>
+  <div class="center-div" id="startContainer">
+    <label>Model</label></br>
+    <select id="model">
+      <option value="custom+anthropic.claude-3-5-sonnet-20240620-v1:0">Amazon Bedrock: Claude 3 Sonnet 3.5</option>
+      <option value="custom+anthropic.claude-3-sonnet-20240229-v1:0">Amazon Bedrock: Claude 3 Sonnet 3</option>
+      <option value="custom+anthropic.claude-3-haiku-20240307-v1:0">Amazon Bedrock: Claude 3 Haiku</option>
+    </select>
+    </br>
+    <label>Voice</label></br>
+    <select id="voice">
+      <option value="aura-athena-en" selected>Athena</option>
+      <option value="aura-asteria-en">Asteria</option>
+      <option value="aura-luna-en">luna</option>
+      <option value="aura-stella-en">stella</option>
+      <option value="aura-hera-en">hera</option>
+      <option value="aura-orion-en">orion</option>
+      <option value="aura-arcas-en">arcas</option>
+      <option value="aura-perseus-en">perseus</option>
+      <option value="aura-angus-en">angus</option>
+      <option value="aura-orpheus-en">orpheus</option>
+      <option value="aura-helios-en">helios</option>
+      <option value="aura-zeus-en">zeus</option>
+    </select>
+    </br>
+    <button id="startConversationBtn" disabled>Loading...</button>
+  </div>
+
+  <div class="center-div" id="instructionsContainer" style="display: none;">
+    <textarea id="instructionsInput" placeholder="Enter instructions here..."></textarea>
+    <br>
+    <button id="updateInstructionsBtn">Update Instructions</button>
+  </div>
+
+  <div class="center-div" id="buttonContainer" style="display: none;">
+    <div class="circle-button" id="aura-athena-en">
+      <div class="button-title">Athena</div>
+    </div>
+    <div class="circle-button" id="aura-angus-en">
+      <div class="button-title">Angus</div>
+    </div>
+  </div>
+
+  <div class="center-div" id="orderContainer" style="display: none;">
+    <div>
+      <h2>
+        Your order
+      </h2>
+
+      <div>
+        <ul id="orderItems" className="no-bullets"></ul>
+      </div>
+
+      <div>
+        <div class="total">Total</div>
+        <div id="orderTotal">$0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu">
+    <h1>Questions I can help with</h1>
+    <div id="items"></div>
+  </div>
+
+</body>
+
+</html>
