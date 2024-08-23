@@ -91,6 +91,7 @@ function updateInstructions(callback) {
 function updateQuestions(){
   const itemsDiv = document.querySelector('#items');
   let questions = [
+    "Can you schedule a meeting for September 30th 2024 at 10am?",
     "What is the overall deductible for an individual and for a family?",
     "Are there services covered before meeting the deductible? If yes, which services?",
     "Are there other deductibles for specific services? If yes, what are they?",
