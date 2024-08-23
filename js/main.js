@@ -3,7 +3,7 @@ const audioContext = new (window.AudioContext || window.webkitAudioContext)({ la
 let startTime = -1;
 
 window.onload = function () {
-  prepareDriveThruConfig();
+  prepareAgentConfig();
   const voice = document.getElementById("voice");
   const model = document.getElementById("model");
   document.getElementById("startConversationBtn").addEventListener("click", () => {
@@ -88,7 +88,7 @@ function updateInstructions(callback) {
     });
 }
 
-function updateMenu(){
+function updateQuestions(){
   const itemsDiv = document.querySelector('#items');
   let questions = [
     "What is the overall deductible for an individual and for a family?",
@@ -124,7 +124,7 @@ function configureSettings(model, voice) {
   const providerAndModel = model.options[model.selectedIndex].value.split("+");
 
   // Configuration settings for the agent
-  let config_settings = getDriveThruStsConfig(state.callID, JSON.stringify(Object.values(state.menu)));
+  let config_settings = getStsConfig(state.callID);
   config_settings.agent.think.provider = providerAndModel[0];
   config_settings.agent.think.model = providerAndModel[1];
   console.log('config_settings', JSON.stringify(config_settings))
@@ -142,47 +142,30 @@ async function handleMessageEvent(data){
   }
   if (!state.callID || state.status === 'sleeping') return;
 
-  const order = await service.getOrder(state.callID);
-  if (order) {
+  const events = await service.getEvents(state.callID);
+  if (events) {
       // Consolidate order needed because sometimes server can send back duplicate items
-      state.consolidatedOrder = order.reduce((acc, item) => {
-          const existingItem = acc.find(i => i.name === item.name);
-          if (existingItem) {
-              existingItem.qty += 1;
-          } else {
-              acc.push({ ...item, qty: 1 });
-          }
-          return acc;
-      }, []);
-      let orderItems = document.querySelector('#orderItems');
-      orderItems.innerHTML = '';
+      state.events = events;
+      let eventItems = document.querySelector('#eventItems');
+      eventItems.innerHTML = '';
       let total = 0;
-      state.consolidatedOrder.forEach((item) => {
+      state.events.forEach((item) => {
           let itemLi = document.createElement('li');
-          itemLi.innerHTML = item.qty + ' x ' + item.name + ' - $' + item.price;
+          itemLi.innerHTML = item;
           itemLi.className = 'no-bullets';
-          orderItems.appendChild(itemLi);
-          total += item.qty * item.price;
+          eventItems.appendChild(itemLi);
       });
-      let orderTotal = document.querySelector('#orderTotal');
-      orderTotal.innerHTML = '$' + total.toFixed(2);
   }
 }
 
-async function prepareDriveThruConfig() {
-  state.initializedDriveThru = true;
+async function prepareAgentConfig() {
+  state.initializedAgent = true;
   try {
-    updateMenu();
-    await service.deleteMenu();state.consolidatedOrder
-    const menuPromises = driveThruMenu.map((item) => service.addToMenu(item));
-    await Promise.all(menuPromises);
+    updateQuestions();
     state.callID = await service.getCallID();
-    state.menu.items = await service.getMenu();
     let button = document.querySelector('#startConversationBtn');
     button.innerHTML = 'Start Conversation';
     button.removeAttribute('disabled');
-
-    // updateMenu();
   } catch (error) {
     console.error("Config error:", error);
   }

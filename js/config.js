@@ -1,12 +1,11 @@
 const state = {
     status: 'awake',
     callID: null,
-    menu: {items:[]},
-    order: [],
-    initializedDriveThru: false
+    events: [],
+    initializedAgent: false
 };
 
-const BASE_URL = 'https://deepgram-workshop-server.glitch.me';
+const BASE_URL = 'https://bedrock-open-enrollment-server.glitch.me';
 const baseConfig = {
     type: "SettingsConfiguration",
     audio: {
@@ -22,44 +21,12 @@ const baseConfig = {
           }
     },
     agent: {
-        listen: { model: "nova-2" },
+        listen: { model: "nova-2-medical" },
         speak: { model: "aura-athena-en" },
     },
 }
 
-const stsConfig = {
-    ...baseConfig,
-    agent: {
-        ...baseConfig.agent,
-        think: {
-            provider: "anthropic",
-            model: "claude-3-haiku-20240307",
-            instructions:
-                `
-                ## Base instructions
-Next, the Coverage Examples are really helpful in visualizing how the plan would work in common medical scenarios. For instance, if you were to have a baby or manage type 2 diabetes, the plan would cover a significant portion of the costs, leaving you with more manageable out-of-pocket expenses.
-
-As customers evaluate the options, be sure to ask questions about things like network providers, prescription drug coverage, and how the plan handles unexpected medical events. If you come across any unfamiliar insurance terms, be sure to refer to the Glossary I've provided. This will help you navigate the plan details with confidence. Remember that I'm here to assist you every step of the way. Feel free to reach out to the customer service contacts I've included if you have any other questions or need further support.
-
-Sample questions:
-
-1. What are the different plan options available to me?
-2. What is the monthly premium for each plan?
-3. What is the annual deductible, and how does it work?
-4. What is the out-of-pocket maximum, and when do I reach it?
-5. Which doctors and hospitals are in-network for each plan?
-6. Does the plan cover prescription drugs, and what is the cost-sharing?
-7. What is the coverage for preventive care services?
-8. How does the plan handle out-of-network care, and what are the costs associated with that?
-9. Can I keep my current doctor under the new plan?
-10. What is the process for filing a claim, and how long does it typically take to get reimbursed?
-                `,
-        },
-    },
-};
-
-
-function getDriveThruStsConfig(callID, menu) {
+function getStsConfig(callID) {
     return {
         ...baseConfig,
         agent: {
@@ -175,22 +142,21 @@ Routine Foot Care	Not covered
 `,
                 functions: [
                     {
-                        name: "add_item",
-                        description: "Add an item to an order. Only items on the menu are valid items.",
+                        name: "add_meeting",
+                        description: "Add a meeting to the schedule.",
                         parameters: {                            
                             type: "object",
                             properties: {
                                 item: {
                                     type: "string",
                                     description: `
-                                        The name of the item that the user would like to order. 
-                                        The valid values are only those on the menu
+                                        The time and date of the meeting.
                                     `,
                                 },
                             },
                             required: ["item"],
                         },
-                        url: BASE_URL + "/calls/" + callID + "/order/items",
+                        url: BASE_URL + "/calls/" + callID + "/events/items",
                         method: "post",   
                     }
                 ],
@@ -198,72 +164,3 @@ Routine Foot Care	Not covered
         },
     };
 }
-
-const driveThruMenu = [
-    {
-        name: "Krabby Patty",
-        description: "The signature burger of the Krusty Krab, made with a secret formula",
-        price: 2.99,
-        category: "meal",
-    },
-    {
-        name: "Double Krabby Patty",
-        description: "A Krabby Patty with two patties.",
-        price: 3.99,
-        category: "meal",
-    },
-    {
-        name: "Krabby Patty with Cheese",
-        description: "A Krabby Patty with a slice of cheese",
-        price: 3.49,
-        category: "meal",
-    },
-    {
-        name: "Double Krabby Patty with Cheese",
-        description: "A Krabby Patty with two patties and a slice of cheese",
-        price: 4.49,
-        category: "meal",
-    },
-    {
-        name: "Salty Sea Dog",
-        description: "A hot dog served with sea salt",
-        price: 2.49,
-        category: "meal",
-    },
-    {
-        name: "Barnacle Fries",
-        description: "Fries made from barnacles",
-        price: 1.99,
-        category: "side",
-    },
-    {
-        name: "Krusty Combo",
-        description: "Includes a Krabby Patty, Seaweed Salad, and a drink",
-        price: 6.99,
-        category: "combo",
-    },
-    {
-        name: "Seaweed Salad",
-        description: "A fresh salad made with seaweed",
-        price: 2.49,
-        category: "side",
-    },
-    {
-        name: "Krabby Meal",
-        description: "Includes a Krabby Patty, fries, and a drink",
-        price: 5.99,
-        category: "combo",
-    },
-    {
-        name: "Kelp Shake",
-        description: "A shake made with kelp juice",
-        price: 2.49,
-        category: "beverage",
-    },
-    {
-        name: "Bubbly buddy",
-        description: "A drink that is bubbly and refreshing",
-        price: 1.49,
-        category: "beverage",
-    }
-]

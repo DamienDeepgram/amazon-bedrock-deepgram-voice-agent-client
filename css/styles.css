@@ -120,7 +120,7 @@ label{
   padding: 0; /* Optional: remove default padding */
   padding-inline-start: 0px;
 }
-.menu{
+.questions{
   position: absolute;
   top: 50px;
   margin-left: 20px;
@@ -134,7 +134,7 @@ label{
   color: #000;
   margin-top: 20px;
 }
-.menu h1 {
+.questions h1 {
   margin: 0 0 20px;
 }
 
