@@ -21,7 +21,7 @@ const baseConfig = {
           }
     },
     agent: {
-        listen: { model: "nova-2-medical" },
+        listen: { model: "nova-2" },
         speak: { model: "aura-athena-en" },
     },
 }
