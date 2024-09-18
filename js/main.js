@@ -126,7 +126,7 @@ function configureSettings(model, voice) {
 
   // Configuration settings for the agent
   let config_settings = getStsConfig(state.callID);
-  config_settings.agent.think.provider = providerAndModel[0];
+  config_settings.agent.think.provider.type = providerAndModel[0];
   config_settings.agent.think.model = providerAndModel[1];
   console.log('config_settings', JSON.stringify(config_settings))
 
