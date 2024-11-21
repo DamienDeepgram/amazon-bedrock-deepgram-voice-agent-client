@@ -17,7 +17,6 @@ const baseConfig = {
             encoding: "linear16",
             sample_rate: 48000,
             container: "none",
-            buffer_size: 250,
           }
     },
     agent: {
